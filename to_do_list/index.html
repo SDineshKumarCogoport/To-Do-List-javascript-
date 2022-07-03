@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+    <script type="text/javascript">
+
+        //Create an array to store the tasks
+         let tasks =[];
+         var count =0;
+         var current_editing_id = -1;
+
+        //Function to add a task
+         function addToDo(){
+            
+            //Getting the value from the html text box
+            let todo = document.getElementById("todo").value;
+
+            //Accessing the display container
+            let to_do_list = document.getElementById("to_do_list_disp"); 
+
+            //Adding values into the tasks array as an object
+            tasks.push({
+                id: count +=1, todo: todo, status:0 })
+
+            showToDo();
+            document.getElementById("todo").value = "";
+        }
+
+        //Function to show all tasks
+         function showToDo(){
+
+            //Accessing the display container
+            let todo_list_disp = document.getElementById("to_do_list_disp");
+
+            //empty the display container
+            todo_list_disp.innerHTML = "";
+
+            //Creating tasks with checkbox, edit,delete options 
+            tasks.forEach(function show(task){
+
+                if(task.status === 1){
+                todo_list_disp.innerHTML += '<p class ="striked"> <input type="checkbox" onchange = "doneTask('+task.id+')" checked ="true" >' + task.todo + '  <button class="delete_button" onclick="delete_the_task('+ task.id +')"> Delete</button><button class="edit_button" onclick="edit_task('+ task.id +')" >  Edit</button> </p>'
+                }
+                else{
+                    todo_list_disp.innerHTML += '<p> <input type="checkbox" onchange = "doneTask('+task.id+')">' + task.todo + '<button  class="delete_button" onclick="delete_the_task('+ task.id +')">  Delete</button><button class="edit_button" onclick="edit_task('+ task.id +')" >  Edit</button></p>'  
+                }
+                
+
+            })
+
+        }
+
+        //Function to delete a task
+        function delete_the_task(ID){
+
+            //Remove the task which has the supplied id
+            tasks = tasks.filter(t=> t.id != ID );
+            showToDo();
+
+        }
+
+
+
+        //Function to edit a task
+        function edit_task(ID){
+
+        current_editing_id = ID;
+
+        //Moving a task to the edit text box
+
+        //accessing the edit box from html
+        var editbox = document.getElementById('todo_edit');
+ 
+        //Get the todo from the task ID
+
+        let task_to_edit = tasks.filter(t=>t.id === ID);
+        editbox.value = task_to_edit[0].todo;
+
+        }
+
+        //Function to save the edited todo
+
+        function save(){
+        //Store the value in the edit box in a variable
+        let edited_value = document.getElementById("todo_edit").value;
+           // console.log(edited_value);
+        tasks = tasks.map(t=>{
+            if(t.id === current_editing_id){
+                t.todo = edited_value;
+            }
+            //console.log(t);
+            return t;
+            
+        })
+
+        document.getElementById('todo_edit').value="";
+        showToDo();
+
+        }
+
+        //function to strike completed tasks
+
+        function doneTask(ID){
+
+            tasks = tasks.map(t=>{
+                if(t.id == ID){
+                    if(t.status === 0) t.status = 1;
+                    else t.status = 0;  
+                }
+                return t;
+            })
+
+            showToDo();
+        }
+
+    </script>
+
+
+</head>
+<body>
+
+<div class="home">
+    <h2>To-Do List</h2>
+    <input class="textbox" type="text" id="todo" placeholder="Add To Do List here">
+    <button class = "add_button" onclick="addToDo()" >Add </button>
+    &nbsp;
+    <input class="textbox" type="text" id="todo_edit" placeholder="Edit the task here">
+    <button class="save_button" onclick="save()" >Save</button>
+
+</div>
+
+<!-- Container to show the list -->
+<div class="container" id="to_do_list_disp">
+
+</div>
+
+</body>
+</html>
+
+<style>
+
+.striked{
+    text-decoration: line-through;
+}
+
+.home{
+    color: #0084cb;
+    font-family: Verdana;
+}
+
+
+.add_button {
+  background-color: #0084cb; 
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-family: Verdana;
+}
+
+.container{
+    margin-top: 20px;
+    font-size: 16;
+    font-family: Verdana;
+}
+
+.save_button {
+  background-color: #4CAF50; 
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-family: Verdana;
+}
+
+.delete_button{
+  
+  background-color: #cb0101; 
+  border: none;
+  color: white;
+  margin-left: 10px;
+  padding: 6px 8px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-family: Verdana;
+    
+}
+
+.edit_button{
+  
+  background-color: #4CAF50; 
+  border: none;
+  color: white;
+  margin-left: 6px;
+  padding: 6px 8px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-family: Verdana;
+    
+}
+
+.textbox {
+    padding: 0;
+    height: 32px;
+    position: relative;
+    left: 0;
+    outline: none;
+    border: 1px solid #cdcdcd;
+    border-color: rgba(0,0,0,.15);
+    background-color: white;
+    font-size: 16px;
+    text-align: center;
+}
+
+</style>
